@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const os = require('os');
 
 module.exports = {
   mode: 'development',
@@ -42,12 +43,18 @@ module.exports = {
     contentBase: path.join(__dirname, 'dev'),
     historyApiFallback: true,
     hot: true,
+    host: os.hostname(),
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/index.html'),
       favicon: path.join(__dirname, 'src/favicon.png'),
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        API_URL: JSON.stringify(`http://${os.hostname()}:8082`),
+      },
     }),
   ],
 };
