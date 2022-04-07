@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import api from 'shared/utils/api';
@@ -19,7 +20,6 @@ import Dates from './Dates';
 import { TopActions, TopActionsRight, Content, Left, Right } from './Styles';
 
 const propTypes = {
-  issueId: PropTypes.string.isRequired,
   projectUsers: PropTypes.array.isRequired,
   fetchProject: PropTypes.func.isRequired,
   updateLocalProjectIssues: PropTypes.func.isRequired,
@@ -27,12 +27,12 @@ const propTypes = {
 };
 
 const ProjectBoardIssueDetails = ({
-  issueId,
   projectUsers,
   fetchProject,
   updateLocalProjectIssues,
   modalClose,
 }) => {
+  const { issueId } = useParams();
   const [{ data, error, setLocalData }, fetchIssue] = useApi.get(`/issues/${issueId}`);
 
   if (!data) return <Loader />;

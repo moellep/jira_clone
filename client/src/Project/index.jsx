@@ -1,9 +1,8 @@
 import React from 'react';
-import { Route, Redirect, useRouteMatch, useHistory } from 'react-router-dom';
+import { Route, Redirect, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 
 import useApi from 'shared/hooks/api';
 import { updateArrayItemById } from 'shared/utils/javascript';
-import { createQueryParamModalHelpers } from 'shared/utils/queryParamModal';
 import { PageLoader, PageError, Modal } from 'shared/components';
 
 import NavbarLeft from './NavbarLeft';
@@ -17,10 +16,8 @@ import { ProjectPage } from './Styles';
 const Project = () => {
   const match = useRouteMatch();
   const history = useHistory();
-
-  const issueSearchModalHelpers = createQueryParamModalHelpers('issue-search');
-  const issueCreateModalHelpers = createQueryParamModalHelpers('issue-create');
-
+  const location = useLocation();
+  const path = location.pathname.replace(/\/issue-(create|search)/, '');
   const [{ data, error, setLocalData }, fetchProject] = useApi.get('/project');
 
   if (!data) return <PageLoader />;
@@ -40,30 +37,42 @@ const Project = () => {
   return (
     <ProjectPage>
       <NavbarLeft
-        issueSearchModalOpen={issueSearchModalHelpers.open}
-        issueCreateModalOpen={issueCreateModalHelpers.open}
+        issueSearchModalOpen={() => history.push(`${path}/issue-search`)}
+        issueCreateModalOpen={() => history.push(`${path}/issue-create`)}
       />
 
       <Sidebar project={project} />
 
-      {issueSearchModalHelpers.isOpen() && (
+      <Route path={`${match.url}/board`}>
+        <Board
+          project={project}
+          fetchProject={fetchProject}
+          updateLocalProjectIssues={updateLocalProjectIssues}
+        />
+      </Route>
+
+      <Route path={`${match.url}/settings`}>
+        <ProjectSettings project={project} fetchProject={fetchProject} />
+      </Route>
+
+      <Route path={`${path}/issue-search`}>
         <Modal
           isOpen
           testid="modal:issue-search"
           variant="aside"
           width={600}
-          onClose={issueSearchModalHelpers.close}
+          onClose={() => history.push(path)}
           renderContent={() => <IssueSearch project={project} />}
         />
-      )}
+      </Route>
 
-      {issueCreateModalHelpers.isOpen() && (
+      <Route path={`${path}/issue-create`}>
         <Modal
           isOpen
           testid="modal:issue-create"
           width={800}
           withCloseIcon={false}
-          onClose={issueCreateModalHelpers.close}
+          onClose={() => history.push(path)}
           renderContent={modal => (
             <IssueCreate
               project={project}
@@ -73,23 +82,7 @@ const Project = () => {
             />
           )}
         />
-      )}
-
-      <Route
-        path={`${match.path}/board`}
-        render={() => (
-          <Board
-            project={project}
-            fetchProject={fetchProject}
-            updateLocalProjectIssues={updateLocalProjectIssues}
-          />
-        )}
-      />
-
-      <Route
-        path={`${match.path}/settings`}
-        render={() => <ProjectSettings project={project} fetchProject={fetchProject} />}
-      />
+      </Route>
 
       {match.isExact && <Redirect to={`${match.url}/board`} />}
     </ProjectPage>

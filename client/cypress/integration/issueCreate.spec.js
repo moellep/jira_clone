@@ -4,7 +4,7 @@ describe('Issue create', () => {
   beforeEach(() => {
     cy.resetDatabase();
     cy.createTestAccount();
-    cy.visit('/project/settings?modal-issue-create=true');
+    cy.visit('/project/settings/issue-create');
   });
 
   it('validates form and creates issue successfully', () => {

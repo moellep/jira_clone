@@ -50,7 +50,7 @@ const renderLinkItem = (match, text, iconType, path) => {
   const isImplemented = !!path;
 
   const linkItemProps = isImplemented
-    ? { as: NavLink, exact: true, to: `${match.path}${path}` }
+    ? { as: NavLink, exact: true, to: `${match.url}${path}` }
     : { as: 'div' };
 
   return (

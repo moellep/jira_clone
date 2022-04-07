@@ -44,27 +44,23 @@ const ProjectBoard = ({ project, fetchProject, updateLocalProjectIssues }) => {
         filters={filters}
         updateLocalProjectIssues={updateLocalProjectIssues}
       />
-      <Route
-        path={`${match.path}/issues/:issueId`}
-        render={routeProps => (
-          <Modal
-            isOpen
-            testid="modal:issue-details"
-            width={1040}
-            withCloseIcon={false}
-            onClose={() => history.push(match.url)}
-            renderContent={modal => (
-              <IssueDetails
-                issueId={routeProps.match.params.issueId}
-                projectUsers={project.users}
-                fetchProject={fetchProject}
-                updateLocalProjectIssues={updateLocalProjectIssues}
-                modalClose={modal.close}
-              />
-            )}
-          />
-        )}
-      />
+      <Route path={`${match.url}/issues/:issueId`}>
+        <Modal
+          isOpen
+          testid="modal:issue-details"
+          width={1040}
+          withCloseIcon={false}
+          onClose={() => history.push(match.url)}
+          renderContent={modal => (
+            <IssueDetails
+              projectUsers={project.users}
+              fetchProject={fetchProject}
+              updateLocalProjectIssues={updateLocalProjectIssues}
+              modalClose={modal.close}
+            />
+          )}
+        />
+      </Route>
     </Fragment>
   );
 };

@@ -10,9 +10,15 @@ const Routes = () => (
   <Router history={history}>
     <Switch>
       <Redirect exact from="/" to="/project" />
-      <Route path="/authenticate" component={Authenticate} />
-      <Route path="/project" component={Project} />
-      <Route component={PageError} />
+      <Route path="/authenticate">
+        <Authenticate />
+      </Route>
+      <Route path="/project">
+        <Project />
+      </Route>
+      <Route>
+        <PageError />
+      </Route>
     </Switch>
   </Router>
 );

@@ -4,7 +4,7 @@ describe('Issue search', () => {
   beforeEach(() => {
     cy.resetDatabase();
     cy.createTestAccount();
-    cy.visit('/project/board?modal-issue-search=true');
+    cy.visit('/project/board/issue-search');
   });
 
   it('displays recent issues if search input is empty', () => {
